@@ -1,29 +1,74 @@
 import React, { useState } from "react";
 import "./ExpenseForm.css";
 
-const ExpenseForm = () => {
+const ExpenseForm = (props) => {
+  // SLUCAJ KADA KORISTIMO 'SLICES OF STATE'
   const [enteredTitle, setEnteredTitle] = useState("");
   const [enteredAmount, setEnteredAmount] = useState("");
   const [enteredDate, setEnteredDate] = useState("");
 
+  // SLUCAJ KADA SE KORISTI 1 useState
+  // const [userInput, setUserInput] = useState({
+  //   enteredTitle: "",
+  //   enteredAmount: "",
+  //   enteredDate: "",
+  // });
+
   const titleChangeHandler = (event) => {
+    // Slices of state (multiple states)
     setEnteredTitle(event.target.value);
+
+    // kada se koristi 1 useState, ali je sigurnije koristiti opciju ispod sa arrow fjom zbog zavisnosti poslednjeg, 'najsvezijeg' state-a i izmene koja bi trebalo da se izvrsi
+    // setUserInput({
+    //   ...userInput,
+    //   enteredTitle: event.target.value,
+    // });
+
+    // setUserInput((prevState) => {
+    //   return { ...prevState, enteredTitle: event.target.value };
+    // });
   };
 
   const amountChangeHandler = (event) => {
+    // Slices of state (multiple states)
     setEnteredAmount(event.target.value);
+    // setUserInput({ ...userInput, enteredAmount: event.target.value });
   };
 
   const dateChangeHandler = (event) => {
+    // Slices of state (multiple states)
     setEnteredDate(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredDate: event.target.value,
+    // });
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const expenseData = {
+      title: enteredTitle,
+      amount: enteredAmount,
+      date: new Date(enteredDate),
+    };
+
+    props.onSaveExpenseData(expenseData);
+    setEnteredTitle("");
+    setEnteredAmount("");
+    setEnteredDate("");
   };
 
   return (
-    <form>
+    <form onSubmit={submitHandler}>
       <div className="new-expense__controls">
         <div className="new-expense__control">
           <label>Title</label>
-          <input type="text" onChange={titleChangeHandler} />
+          <input
+            type="text"
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
         </div>
         <div className="new-expense__control">
           <label>Amount</label>
@@ -31,6 +76,7 @@ const ExpenseForm = () => {
             type="number"
             min="0.01"
             step="0.01"
+            value={enteredAmount}
             onChange={amountChangeHandler}
           />
         </div>
@@ -40,6 +86,7 @@ const ExpenseForm = () => {
             type="date"
             min="2019-01-01"
             step="2022-12-31"
+            value={enteredDate}
             onChange={dateChangeHandler}
           />
         </div>
